@@ -1,0 +1,30 @@
+L := ToricLattice(7);
+M := DiagonalMatrix([1,-1,-1,-1,-1,-1,-1]);
+K := L![-3,1,1,1,1,1,1];   
+
+//
+
+E1 := [0,0,0,0,-1,1,0];
+E2 := [1,0,0,-1,-1,-1,0];
+E3 := [0,0,0,-1,1,0,0];
+E4 := [0,1,0,0,0,0,-1];
+E5 := [0,-1,1,0,0,0,0];
+E6 := [0,0,-1,1,0,0,0];
+R  := [E1,E2,E3,E4,E5,E6];    
+
+E7 := [0,0,0,0,0,0,1];
+S  := [E7];  
+
+NegEx2 := S cat R; 
+H := HNef(NegEx2);
+PND := {N : N in HNef(NegEx2)};
+
+//
+
+X:=[];
+for A in PND do
+if #Test2(A,NegEx2,M,H) ge 1 then X:= X cat [A];  
+end if;
+end for;
+
+X1:=PND diff Set(X);
