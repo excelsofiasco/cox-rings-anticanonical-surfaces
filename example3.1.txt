@@ -23,11 +23,13 @@ S:=[E1,Eq,Lpq];
 
 NegEx1:= S cat R;
 H := HNef(NegEx1);
-HNef2:=[L!A+L!B : A,B in H];
+CB := [Z : Z in H | qua(Z,Z,M) eq 0 and qua(Z,-K,M) eq 2];
+
+HNef2 := {L!C+L!P : C in Seqset(CB), P in Seqset(S)};
 
 //
 
-PND:=Set(H cat HNef2);  
+PND:=Seqset(H) join HNef2;  
 
 //
 
