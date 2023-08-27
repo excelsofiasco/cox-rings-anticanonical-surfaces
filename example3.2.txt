@@ -35,7 +35,7 @@ H := HNef(NegEx4);
 
 CB := [Z : Z in H | qua(Z,Z,M) eq 0 and qua(Z,-K,M) eq 2];
 
-HNef2 := {L!C+L!P : C in Seqset(CB) | P in Seqset(S)};
+HNef2 := {L!C+L!P : C in Seqset(CB), P in Seqset(S)};
 
 //
 
