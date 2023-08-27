@@ -1,0 +1,79 @@
+L := ToricLattice(10);
+M := DiagonalMatrix([1,-1,-1,-1,-1,-1,-1,-1,-1,-1]);
+K := L![-3,1,1,1,1,1,1,1,1,1];
+
+\\ 
+
+R1 := [0,-1,1,0,0,0,0,0,0,0];
+R2 := [0,0,-1,1,0,0,0,0,0,0];
+
+S1 := [0,0,0,0,-1,1,0,0,0,0];
+S2 := [0,0,0,0,0,-1,1,0,0,0];
+
+T1 := [0,0,0,0,0,0,0,-1,1,0];
+
+L1 := [1,0,0,-1,0,-1,-1,0,0,0];
+L2 := [1,0,0,0,0,0,-1,0,-1,-1];
+L3 := [1,0,0,-1,0,0,0,-1,-1,0];
+L4 := [1,-1,-1,-1,0,0,0,0,0,0];
+
+R:=[R1,R2,S1,S2,T1,L1,L2,L3,L4];
+
+//
+
+Rv := [L!(Eltseq(Matrix(1,10,Eltseq(r))*M)): r in R];
+Kv := L!(Eltseq(Matrix(1,10,Eltseq(K))*M));
+P := &meet[HalfspaceToPolyhedron(Rv[i],0) : i in [1..#Rv]] meet HyperplaneToPolyhedron(-Kv,1);
+pts :=  SetToSequence(Points(CompactPart(P)));
+S := [L!p+(qua(p,p,M)+1)/2*K: p in pts];
+
+//
+
+NegEx4 := [L!r : r in R] cat S;
+
+H := HNef(NegEx4);
+
+CB := [Z : Z in H | qua(Z,Z,M) eq 0 and qua(Z,-K,M) eq 2];
+
+HNef2 := {L!C+L!P : C in Seqset(CB) | P in Seqset(S)};
+
+//
+
+PND:=Seqset(H) join HNef2; 
+
+//
+
+Test2 := function(N,Neg,M,H);
+if L!N eq -L!K or L!N eq -2*L!K then return [];
+end if;
+S := [Z : Z in DisjointCurves(Neg,M) | qua(L!N,L!Z[1],M) eq 0];
+X :=[];
+for Z in S do
+N2:=L!N-L!Z[2];
+if IsEff(N2,Neg,M,H) then
+if Nefification(L!Z[1],N2,Neg,H)
+then X := X cat [[L!N,L!Z[1],L!Z[2]]];
+end if;
+end if;
+end for;
+return X;
+end function;
+
+//
+
+X:=[];
+for A in PND do
+if #Test2(A,NegEx4,M,H) ge 1 then X:= X cat [A];  
+end if;
+end for;
+
+X1:=PND diff Set(X);   
+
+//
+
+X1;
+
+
+
+
+
