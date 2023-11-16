@@ -1,0 +1,39 @@
+G1 := [0,-1,1,0,0,0,0,0,0,0];
+G2 := [0,0,-1,1,0,0,0,0,0,0];
+
+H1 := [0,0,0,0,-1,1,0,0,0,0];
+H2 := [0,0,0,0,0,-1,1,0,0,0];
+
+I1 := [0,0,0,0,0,0,0,-1,1,0];
+I2 := [0,0,0,0,0,0,0,0,-1,1];
+
+Q  := [2,0,-1,-1,0,-1,-1,0,-1,-1];
+
+Q1 := [2,-1,-1,-1,-1,-1,-1,0,0,0];
+Q2 := [2,-1,-1,-1,0,0,0,-1,-1,-1];
+Q3 := [2,0,0,0,-1,-1,-1,-1,-1,-1];
+
+
+R :=[G1,G2,H1,H2,I1,I2,Q,Q1,Q2,Q3];
+
+Rv := [L!(Eltseq(Matrix(1,10,Eltseq(r))*M)): r in R];
+Kv := L!(Eltseq(Matrix(1,10,Eltseq(K))*M));
+P := &meet[HalfspaceToPolyhedron(Rv[i],0) : i in [1..#Rv]] meet HyperplaneToPolyhedron(-Kv,1);
+pts :=  SetToSequence(Points(CompactPart(P)));
+S := [L!p+(qua(p,p,M)+1)/2*K: p in pts];
+
+NegEx4 := [L!r : r in R] cat S;
+
+H:=HNef(NegEx4);
+
+PND:=Seqset(H); 
+
+//
+
+X:=[];
+for A in PND do
+if #Test2(A,NegEx4,M,H) ge 1 then X:= X cat [A];  
+end if;
+end for;
+
+X1:=PND diff Set(X);   
