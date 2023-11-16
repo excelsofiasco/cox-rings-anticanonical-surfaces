@@ -1,0 +1,153 @@
+L := ToricLattice(10);
+M := DiagonalMatrix([1,-1,-1,-1,-1,-1,-1,-1,-1,-1]);
+K := L![-3,1,1,1,1,1,1,1,1,1];
+
+//
+
+qua := function(A,B,Q)
+K := CoefficientRing(Q);
+n := Nrows(Q);
+return (Matrix(K,1,n,Eltseq(A))*Q*Matrix(K,n,1,Eltseq(B)))[1,1];
+end function;
+
+//
+
+HNef := function(Neg);
+Eff := Cone([L!Eltseq(v) : v in Neg]);
+Nef := Cone([L!Eltseq(v) : v in Rays(Dual(Eff*M))]);
+return HilbertBasis(Nef);
+end function;
+
+//
+
+IsNef := function (N,Neg,M);
+if {qua(N,C,M) ge 0 : C in Neg} eq {true} then return true;
+else return false;
+end if;
+end function;
+
+//
+
+IsEff:=function(N,Neg,M,H);
+if {qua(N,A,M) ge 0 : A in H} eq {true} then return true;
+else return false;
+end if;
+end function;
+
+//
+
+IsNullh1 := function(N,Neg,M);
+if (IsNef(N,Neg,M) and qua(N,K,M) lt 0) or
+(IsNef(L!K+L!N,Neg,M) and qua(N,N,M) gt 0) then return true;
+else return false;
+end if;
+end function;
+
+//
+
+DisjointNef := function(Neg,M,H);
+return [[A,B] : A,B in Set(H) join {L!N : N in Neg}
+join {-2*L!K} | qua(A,B,M) eq 0 and
+(qua(A,K,M) lt 0 or qua(B,K,M) lt 0)] cat [[-2*L!K,-2*L!K]];
+end function;
+
+//
+
+DisjointNeg := function(Neg,M);
+return [[A,B] : A,B in Neg | qua(A,B,M) eq 0];
+end function;
+
+//
+
+DisjointCurves:= function(Neg,M);
+return [[A,B] : A,B in {L!N : N in Neg} join {L!-K} | qua(A,B,M) eq 0];
+end function;
+
+//
+
+Nefification := function(A,N,Neg,H);
+repeat
+if IsEff(N,Neg,M,H) then m,i := Min([qua(N,E,M) : E in Neg]);
+C:= Neg[i];
+else return false;
+end if;
+if m lt 0 then N:= L!N - L!Eltseq(C);
+else return true;
+end if;
+until m ge 0 or L!C eq L!A;
+if L!C eq L!A then return false;
+else return true;
+end if;
+end function;
+
+//
+
+NegTriples:=function(Neg);
+return [[A,B,C] : A,B,C in Neg];
+end function;
+
+//
+
+G1 := [0,-1,1,0,0,0,0,0,0,0];
+G2 := [0,0,-1,1,0,0,0,0,0,0];
+G3 := [0,0,0,-1,1,0,0,0,0,0];
+G4 := [0,0,0,0,-1,1,0,0,0,0];
+G5 := [0,0,0,0,0,-1,1,0,0,0];
+
+L1 := [1,0,0,0,-1,-1,-1,0,0,0];
+L2 := [1,0,0,0,0,0,-1,-1,-1,0];
+
+C1 := [3,-1,-1,-1,-1,-1,-1,0,-2,-1];
+C2 := [3,-1,-1,-1,-1,-1,-1,-2,0,-1];
+
+D  := [3,0,-1,-1,-1,-1,-1,-1,-1,-2];
+
+
+
+R :=[G1,G2,G3,G4,G5,L1,L2,D,C1,C2];
+//
+
+//Compute classes of [-1]-curves for Example 1
+
+Rv := [L!(Eltseq(Matrix(1,10,Eltseq(r))*M)): r in R];
+Kv := L!(Eltseq(Matrix(1,10,Eltseq(K))*M));
+P := &meet[HalfspaceToPolyhedron(Rv[i],0) : i in [1..#Rv]] meet HyperplaneToPolyhedron(-Kv,1);
+pts :=  SetToSequence(Points(CompactPart(P)));
+S := [L!p+(qua(p,p,M)+1)/2*K: p in pts];
+
+
+
+NegEx4 := [L!r : r in R] cat S;
+
+H := HNef(NegEx4);
+
+CB := [Z : Z in H | qua(Z,Z,M) eq 0 and qua(Z,-K,M) eq 2];
+
+HNef2 := {L!C+L!P : C in Seqset(CB) | P in Seqset(S)};
+
+//
+
+PND:=Seqset(H) join HNef2; 
+//
+
+PND:=Set(H cat HNef2);  
+
+//
+
+X:=[];
+for A in PND do
+if #Test2(A,NegEx4,M,H) ge 1 then X:= X cat [A];  
+end if;
+end for;
+
+X1:=PND diff Set(X);   
+
+
+
+E1 := [0,1,0,0,0,0,0,0,0,0];
+E2 := [0,0,0,0,0,0,0,1,0,0];
+E3 := [0,0,0,0,0,0,0,0,1,0];
+E4 := [0,0,0,0,0,0,0,0,0,1];
+
+Eff := Cone([L!Eltseq(v) : v in NegEx4]);
+Nef := Cone([L!Eltseq(v) : v in Rays(Dual(Eff*M))]);
