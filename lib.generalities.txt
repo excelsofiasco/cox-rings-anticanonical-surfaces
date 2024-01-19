@@ -20,41 +20,10 @@ end function;
 
 //
 
-IsNef := function (N,Neg,M);
-if {qua(N,C,M) ge 0 : C in Neg} eq {true} then return true;
-else return false;
-end if;
-end function;
-
-//
-
 IsEff:=function(N,Neg,M,H);
 if {qua(N,A,M) ge 0 : A in H} eq {true} then return true;
 else return false;
 end if;
-end function;
-
-//
-
-IsNullh1 := function(N,Neg,M);
-if (IsNef(N,Neg,M) and qua(N,K,M) lt 0) or
-(IsNef(L!K+L!N,Neg,M) and qua(N,N,M) gt 0) then return true;
-else return false;
-end if;
-end function;
-
-//
-
-DisjointNef := function(Neg,M,H);
-return [[A,B] : A,B in Set(H) join {L!N : N in Neg}
-join {-2*L!K} | qua(A,B,M) eq 0 and
-(qua(A,K,M) lt 0 or qua(B,K,M) lt 0)] cat [[-2*L!K,-2*L!K]];
-end function;
-
-//
-
-DisjointNeg := function(Neg,M);
-return [[A,B] : A,B in Neg | qua(A,B,M) eq 0];
 end function;
 
 //
@@ -78,10 +47,4 @@ until m ge 0 or L!C eq L!A;
 if L!C eq L!A then return false;
 else return true;
 end if;
-end function;
-
-//
-
-NegTriples:=function(Neg);
-return [[A,B,C] : A,B,C in Neg];
 end function;
