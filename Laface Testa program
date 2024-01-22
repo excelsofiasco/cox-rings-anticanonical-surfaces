@@ -1,0 +1,200 @@
+// Calcola il gruppo di Weyl di E_8
+
+ S10 := Sym(10);
+ gens := [PermutationMatrix(Integers(),S10!(i,i+1)) : i in [2..8]] 
+         cat [DiagonalJoin(Matrix([[2,-1,-1,-1],[1,0,-1,-1],[1,-1,0,-1],[1,-1,-1,0]]),
+              IdentityMatrix(Integers(),6))];
+ W := MatrixGroup<10,Integers()|gens>;
+
+// Calcola le 240 (-2)-classi di E_8
+ v := Vector([0,1,-1,0,0,0,0,0,0,0]);
+ S := v^W;
+
+// Costruisce il reticolo E8 come sottoreticolo di Z^10
+ L:=Lattice(Parent(v));
+ E1:=sub<L|S>;
+ M:=-Matrix(8,8,[p[1]*q[1]-&+[p[i]*q[i] : i in [2..10]] : p,q in [Eltseq(p) : p in Basis(E1)]]);
+ Q:=&cat[Eltseq(p) : p in Basis(E1)];
+ E:=Lattice(8,Q,M);
+
+/*
+il gruppo di Weyl ha azione sul duale del reticolo E che coincide con l'azione su E
+WE:=AutomorphismGroup(E);
+Wd := MatrixGroup<8,Integers()|[M*Transpose(gg)*M^(-1) : gg in Generators(WE)]>;
+Wd eq WE;
+*/
+
+lat := function(H)
+
+ if #H eq 9 then
+   A := Parent(H[1]);
+   G,f := quo<A|sub<A|&+H>>;
+   g := [f(H[i]) : i in [1..8]];
+ else g := H;
+ end if;
+
+ reti:=[Lattice("E", 8) , 
+	Lattice("D", 8) , 
+	Lattice("A", 8) , 
+	DirectSum(Lattice("E", 7),Lattice("A", 1)) , 
+	DirectSum(Lattice("E", 6),Lattice("A", 2)) , 
+	DirectSum(Lattice("A", 4),Lattice("A", 4)) , 
+	DirectSum(Lattice("A", 7),Lattice("A", 1)) , 
+	DirectSum(Lattice("D", 5),Lattice("A", 3)) , 
+	DirectSum(Lattice("A", 3),Lattice("D", 5)) , 
+	DirectSum([Lattice("A", 5),Lattice("A", 2),Lattice("A", 1)]),
+	DirectSum([Lattice("D", 6),Lattice("A", 1),Lattice("A", 1)]),
+	DirectSum(Lattice("D", 4),Lattice("D", 4)),
+	DirectSum([Lattice("A", 2),Lattice("A", 2),Lattice("A", 2),Lattice("A", 2)])
+];
+
+ nomi:=["E~8" , 
+	"D~8" , 
+	"A~8" , 
+	"E~7 A~1" , 
+	"E~6 A~2" , 
+	"A~4 A~4" , 
+	"A~7 A~1" , 
+	"D~5 A~3" , 
+	"A~3 D~5" , 
+	"A~5 A~2 A~1",
+	"D~6 A~1 A~1",
+	"D~4 D~4",
+	"A~2 A~2 A~2 A~2"
+];
+
+ u := Identity(Parent(g[1]));
+ ret:=[p : p in S | &+[p[i+1]*g[i] : i in [1..8]] eq u];
+ R:=sub<E|[Solution(Matrix(8,10,Q),p) : p in ret]>;
+ ll:=[nomi[i] : i in [1..#nomi] | IsIsomorphic(R,reti[i])];
+ return R,ll;
+end function;
+
+// Il divisore anticanonico dello scoppiamento X del piano in 9 punti
+ K := Vector([3,-1,-1,-1,-1,-1,-1,-1,-1,-1]);
+
+/* 
+    La seguente funzione ha come input il gruppo abeliano A,
+    generato dalle differenze dei nove punti sulla curva ellittica C,
+    ed una sequenza H di 10 elementi di A, dove H[1] Ë il divisore
+    iperpiano di C mentre i restanti H[i] sono p_i - o.
+    
+    Nel programma:
+    R = insieme delle (-2)-classi effettive.
+    Q = insieme delle (-2)-classi effettive ed irriducibili.
+    M = matrice d'intersezione delle (-2)-curve.
+
+   Output = la coppia M, Q.
+*/
+
+Gcurve := function(H)
+ 
+ u := Identity(Parent(H[1]));
+ n := Order(&+H);
+ vals:=[[i : i in [1..#H] | H[i] eq q] : q in [p : p in Set(H) | Multiplicity(H,p) gt 1]];
+ Es:=Rows(IdentityMatrix(Integers(),#H+1))[2..#H+1];
+ R:=Set(&cat([[Es[rr[i]]-Es[rr[i+1]] : i in [1..#rr-1]] : rr in vals]));
+ rr:={<p,p,0> : p in R | p[10] eq 0} join {<p,p-K,1> : p in R | p[10] eq -1};
+ r:=0;
+ for E in S do
+  ve:=false;
+  for m in [0..n] do
+   C := E + m*K;
+   if &+[C[i+1]*H[i]: i in [1..#H]] eq u and C[1] gt 0 then 
+    R := R join {C}; 
+    if E notin {p[2] : p in rr} then rr := rr join {<C,E,m>}; end if; ve:=true;
+   end if;
+  end for;
+   if ve then r:=r+1; end if;
+ end for;
+
+if #R eq 0 then 
+	return false,_,_,_,_,_;
+else
+ d := Minimum({E[1]: E in R});
+ Q := {E: E in R| E[1] eq d};
+ R := R diff Q;
+ while R ne {} do
+  d := Minimum({E[1]: E in R});
+  C := Random([E: E in R| E[1] eq d]);
+  if Minimum([C[1]*E[1]-&+[C[i]*E[i]: i in [2..10]]: E in Q]) ge 0 then Q := Q join {C}; end if;
+  R := R diff {C};
+ end while;
+end if;
+
+ Q:=Sort(SetToSequence(Q));
+ rr := Sort([rrr : rrr in rr | rrr[1] in Q]);
+ M := Matrix([[A[1]*B[1]-&+[A[i]*B[i]: i in [2..10]]: A in Q]: B in Q]);
+
+ return true,M,CartanName(-M),Matrix(Q),ElementaryDivisors(Matrix(Q)),rr;
+
+end function;
+
+gr := function(H)
+ _,_,cn:=Gcurve(H);
+ return cn;
+end function;
+
+cvec := function(H)
+ return [H[i]-H[i+1] : i in [1..8]] cat [H[1]+H[2]+H[3]];
+end function;
+
+qua := function(a,b)
+ a:=Eltseq(a);
+ b:=Eltseq(b);
+ return a[1]*b[1]-&+[a[i]*b[i] : i in [2..#a]];
+end function;
+
+FindSections := function(M)
+ n := Ncols(M);
+ L := ToricLattice(n);
+ D := DiagonalMatrix([1] cat [-1 : i in [2..n]]);
+ K := L!([-3] cat [1 : i in [2..n]]);
+ comp := [L!Eltseq(p) : p in Rows(M)];
+ P := &meet[HalfspaceToPolyhedron(C*D,0) : C in comp] meet HyperplaneToPolyhedron(-K*D,1);
+ pts := Setseq(Points(CompactPart(P)));
+ curve := [];
+ for p in pts do
+  Append(~curve,L!p+Quotrem(qua(p,p)+1,2)*K);
+ end for;
+ return curve;
+end function;
+
+FindLiftings := function(f,v,d)
+ G := Domain(f);
+ A := Codomain(f);
+ L := CartesianProduct([[g : g in G | f(g) eq w] : w in v]);
+ return [[q : q in p] : p in L | Order(&+[q : q in p]) eq d];
+end function;
+
+
+
+\\
+
+
+
+A := AbelianGroup([5]);
+B := AbelianGroup([1]);
+f := hom<A->B|[1]>;
+
+// El siguiente vector H0 está a principio de
+// pag. 9 del paper https://arxiv.org/pdf/1502.00275.pdf
+
+H0 := [n*B.1 : n in [0, 0, 0, 0, 0, 0, 0, 0, 0]];
+
+// El vector H es un lifting de H0,
+// es decir f(H[i]) = H0[i] para cada i
+
+H := Random(FindLiftings(f,H0,5));
+
+// Las filas de la matriz M son las (-2)-curvas
+
+_,_,type,N := Gcurve(H);
+
+type; 
+N;
+
+
+
+
+\\
