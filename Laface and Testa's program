@@ -171,7 +171,7 @@ end function;
 
 
 
-// Here we wanna tweak some setting for use:
+                                                            // Here we wanna tweak some setting for use:
 
 A := AbelianGroup([5]);                                     // Here, A is an extension of Z/mZ where m is the index of the surface by E8/Lambda as below.
 B := AbelianGroup([1]);                                     // Here, B is the group E8/Lambda, where Lambda is the lattice associated to a given surface.
