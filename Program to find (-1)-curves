@@ -1,0 +1,8 @@
+// Given a list R of (-2)-curves, this program returns a list S of all (-1)-curves of the surface.
+
+
+Rv := [L!(Eltseq(Matrix(1,10,Eltseq(r))*M)): r in R];
+Kv := L!(Eltseq(Matrix(1,10,Eltseq(K))*M));
+P := &meet[HalfspaceToPolyhedron(Rv[i],0) : i in [1..#Rv]] meet HyperplaneToPolyhedron(-Kv,1);
+pts :=  SetToSequence(Points(CompactPart(P)));
+S := [L!p+(qua(p,p,M)+1)/2*K: p in pts];
