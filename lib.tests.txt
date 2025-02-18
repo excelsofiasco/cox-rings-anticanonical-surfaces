@@ -1,4 +1,4 @@
-Test1 := function(N,Neg,M,H,M,L,K);
+Test1 := function(N,Neg,M,H,L,K);
 if L!N eq -L!K or L!N eq -2*L!K then return [];
 end if;
 S := [Z : Z in DisjointCurves(Neg,M,L,K) | qua(L!N,L!Z[1],M) eq 0];
