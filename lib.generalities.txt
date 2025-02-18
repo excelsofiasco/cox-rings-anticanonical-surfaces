@@ -6,7 +6,7 @@ end function;
 
 //
 
-HNef := function(Neg,M);
+HNef := function(Neg,M,L);
 Eff := Cone([L!Eltseq(v) : v in Neg]);
 Nef := Cone([L!Eltseq(v) : v in Rays(Dual(Eff*M))]);
 return HilbertBasis(Nef);
@@ -22,13 +22,13 @@ end function;
 
 //
 
-DisjointCurves:= function(Neg,M);
+DisjointCurves:= function(Neg,M,L);
 return [[A,B] : A,B in {L!N : N in Neg} join {L!-K} | qua(A,B,M) eq 0];
 end function;
 
 //
 
-Nefification := function(A,N,Neg,H);
+Nefification := function(A,N,Neg,H,L);
 repeat
 if IsEff(N,Neg,M,H) then m,i := Min([qua(N,E,M) : E in Neg]);
 C:= Neg[i];
