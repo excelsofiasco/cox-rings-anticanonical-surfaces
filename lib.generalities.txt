@@ -22,7 +22,7 @@ end function;
 
 //
 
-DisjointCurves:= function(Neg,M,L);
+DisjointCurves:= function(Neg,M,L,K);
 return [[A,B] : A,B in {L!N : N in Neg} join {L!-K} | qua(A,B,M) eq 0];
 end function;
 
