@@ -1,7 +1,7 @@
-Test1 := function(N,Neg,M,H,L);
+Test1 := function(N,Neg,M,H,L,K);
 if L!N eq -L!K or L!N eq -2*L!K then return [];
 end if;
-S := [Z : Z in DisjointCurves(Neg,M,L) | qua(L!N,L!Z[1],M) eq 0];
+S := [Z : Z in DisjointCurves(Neg,M,L,K) | qua(L!N,L!Z[1],M) eq 0];
 X :=[];
 for Z in S do
 N2:=L!N-L!Z[2];
