@@ -28,7 +28,7 @@ end function;
 
 //
 
-Nefification := function(A,N,Neg,H,L);
+Nefification := function(A,N,Neg,H,M,L);
 repeat
 if IsEff(N,Neg,M,H) then m,i := Min([qua(N,E,M) : E in Neg]);
 C:= Neg[i];
