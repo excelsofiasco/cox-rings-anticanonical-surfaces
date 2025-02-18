@@ -28,7 +28,7 @@ S:=[E1,Eq,Lpq];
 //
 
 NegEx1:= S cat R;
-H := HNef(NegEx1,M);
+H := HNef(NegEx1,M,L);
 
 PND:=Seqset(H);  
 
@@ -36,7 +36,7 @@ PND:=Seqset(H);
 
 X:=[];
 for A in PND do
-if #Test1(A,NegEx1,M,H) ge 1 then X:= X cat [A];  
+if #Test1(A,NegEx1,M,H,L) ge 1 then X:= X cat [A];  
 end if;
 end for;
 
