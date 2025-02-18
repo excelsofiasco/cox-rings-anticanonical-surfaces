@@ -37,7 +37,7 @@ PND:=Seqset(H);
 
 X:=[];
 for A in PND do
-if #Test1(A,NegEx4,M,H,L,K) ge 1 then X:= X cat [A];  
+if #Test1(A,NegEx4,M,H,M,L,K) ge 1 then X:= X cat [A];  
 end if;
 end for;
 
