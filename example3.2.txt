@@ -30,14 +30,14 @@ S := [L!p+(qua(p,p,M)+1)/2*K: p in pts];
 //
 
 NegEx4 := [L!r : r in R] cat S;
-H := HNef(NegEx4,M);
+H := HNef(NegEx4,M,L);
 PND:=Seqset(H); 
 
 //
 
 X:=[];
 for A in PND do
-if #Test1(A,NegEx4,M,H) ge 1 then X:= X cat [A];  
+if #Test1(A,NegEx4,M,H,L) ge 1 then X:= X cat [A];  
 end if;
 end for;
 
