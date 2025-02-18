@@ -28,7 +28,7 @@ S:=[E1,Eq,Lpq];
 //
 
 NegEx1:= S cat R;
-H := HNef(NegEx1);
+H := HNef(NegEx1,M);
 
 PND:=Seqset(H);  
 
