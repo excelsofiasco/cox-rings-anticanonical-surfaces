@@ -17,7 +17,7 @@ S  := [E7];
 
 NegEx2 := S cat R; 
 H := HNef(NegEx2,M,L);
-PND := {N : N in HNef(NegEx2)};
+PND := {N : N in H};
 
 //
 
