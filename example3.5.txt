@@ -23,7 +23,7 @@ PND := {N : N in HNef(NegEx2)};
 
 X:=[];
 for A in PND do
-if #Test1(A,NegEx2,M,H,L) ge 1 then X:= X cat [A];  
+if #Test1(A,NegEx2,M,H,L,K) ge 1 then X:= X cat [A];  
 end if;
 end for;
 
