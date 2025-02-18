@@ -2,7 +2,7 @@ L := ToricLattice(10);
 M := DiagonalMatrix([1,-1,-1,-1,-1,-1,-1,-1,-1,-1]);
 K := L![-3,1,1,1,1,1,1,1,1,1];
 
-\\ 
+// 
 
 R1 := [0,-1,1,0,0,0,0,0,0,0];
 R2 := [0,0,-1,1,0,0,0,0,0,0];
@@ -37,7 +37,7 @@ PND:=Seqset(H);
 
 X:=[];
 for A in PND do
-if #Test1(A,NegEx4,M,H,L) ge 1 then X:= X cat [A];  
+if #Test1(A,NegEx4,M,H,L,K) ge 1 then X:= X cat [A];  
 end if;
 end for;
 
