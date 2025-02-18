@@ -16,14 +16,14 @@ E7 := [0,0,0,0,0,0,1];
 S  := [E7];  
 
 NegEx2 := S cat R; 
-H := HNef(NegEx2,M);
+H := HNef(NegEx2,M,L);
 PND := {N : N in HNef(NegEx2)};
 
 //
 
 X:=[];
 for A in PND do
-if #Test1(A,NegEx2,M,H) ge 1 then X:= X cat [A];  
+if #Test1(A,NegEx2,M,H,L) ge 1 then X:= X cat [A];  
 end if;
 end for;
 
