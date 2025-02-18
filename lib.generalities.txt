@@ -1,9 +1,3 @@
-L := ToricLattice(10);
-M := DiagonalMatrix([1,-1,-1,-1,-1,-1,-1,-1,-1,-1]);
-K := L![-3,1,1,1,1,1,1,1,1,1];
-
-//
-
 qua := function(A,B,Q)
 K := CoefficientRing(Q);
 n := Nrows(Q);
@@ -12,7 +6,7 @@ end function;
 
 //
 
-HNef := function(Neg);
+HNef := function(Neg,M);
 Eff := Cone([L!Eltseq(v) : v in Neg]);
 Nef := Cone([L!Eltseq(v) : v in Rays(Dual(Eff*M))]);
 return HilbertBasis(Nef);
